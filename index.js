@@ -5,12 +5,10 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
-// nasifulislamnasif23
 
-// 49s3PZc0qxQfR3ru
-
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+
 
 
 
@@ -27,8 +25,20 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+
+        const carCollection = client.db("carsCollectionDB").collection("allCars");
+
+        app.post("/allcars", async(req, res) => {
+            const car = req.body;
+            const result = await carCollection.insertOne(car);
+            console.log(result);
+            res.send(result)
+        });
+        app.get("/allcars", async(req, res) => {
+            const result = await carCollection.find().toArray();
+            res.send(result)
+            // console.log(result);
+        })
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
