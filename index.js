@@ -32,38 +32,73 @@ async function run() {
 
         // all cars
 
-        app.post("/allcars", async(req, res) => {
+        app.post("/allcars", async (req, res) => {
             const car = req.body;
             const result = await carCollection.insertOne(car);
             console.log(result);
             res.send(result)
         });
-        app.get("/allcars", async(req, res) => {
+        app.get("/allcars", async (req, res) => {
             const result = await carCollection.find().toArray();
             res.send(result)
             // console.log(result);
         })
 
+        app.get("/allcars/:id", async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = {
+                _id: new ObjectId(id)
+            }
+            const result = await carCollection.findOne(query);
+            res.send(result);
+            console.log(result);
+        });
+
+        app.put("/allcars/:id", async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+            const filter = {
+                _id: new ObjectId(id)
+            };
+            const options = { upsert: true };
+            const updatedData = {
+                $set: {
+                    image: data.image,
+                    name: data.name,
+                    brandName: data.brandName,
+                    type: data.type,
+                    description: data.description,
+                    price: data.price,
+                    rating: data.rating
+                }
+            };
+            const result = await carCollection.updateOne(filter, updatedData, options);
+            res.send(result);
+        })
+
+        // image, name, brandName, type, description, price, rating
+
 
 
         // all carts
-        app.post("/allcart", async(req, res) => {
+        app.post("/allcart", async (req, res) => {
             const cart = req.body;
             const result = await cartCollection.insertOne(cart);
             console.log(result);
             res.send(result)
         });
-        app.get("/allcart", async(req, res) => {
+        app.get("/allcart", async (req, res) => {
             const result = await cartCollection.find().toArray();
             res.send(result)
             console.log(result);
         })
 
-        app.delete("/allcart/:id", async(req, res) => {
+        app.delete("/allcart/:id", async (req, res) => {
             const id = req.params.id;
             console.log(id);
             const query = {
-                _id : new ObjectId(id)
+                _id: new ObjectId(id)
             }
             const result = await cartCollection.deleteOne(query);
             res.send(result);
