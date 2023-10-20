@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -49,13 +49,24 @@ async function run() {
         // all carts
         app.post("/allcart", async(req, res) => {
             const cart = req.body;
-            const result = await carCollection.insertOne(cart);
+            const result = await cartCollection.insertOne(cart);
             console.log(result);
             res.send(result)
         });
         app.get("/allcart", async(req, res) => {
             const result = await cartCollection.find().toArray();
             res.send(result)
+            console.log(result);
+        })
+
+        app.delete("/allcart/:id", async(req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = {
+                _id : new ObjectId(id)
+            }
+            const result = await cartCollection.deleteOne(query);
+            res.send(result);
             console.log(result);
         })
 
