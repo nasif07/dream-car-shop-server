@@ -94,6 +94,19 @@ async function run() {
             console.log(result);
         })
 
+
+
+        app.get("/allcars/:id", async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = {
+                _id: new ObjectId(id)
+            }
+            const result = await carCollection.findOne(query);
+            res.send(result);
+            console.log(result);
+        });
+
         app.delete("/allcart/:id", async (req, res) => {
             const id = req.params.id;
             console.log(id);
